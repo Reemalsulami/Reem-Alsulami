@@ -18,41 +18,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // إعداد الاختبار في activities.html
-  const answers = { q1: 'c', q2: 'b', q3: 'c' }; // الإجابات الصحيحة
-  const quizForm = document.getElementById('quizForm');
-  const submitBtn = document.getElementById('submitQuiz');
-  const quizResult = document.getElementById('quizResult');
-  const scoreText = document.getElementById('scoreText');
-  const showAnswersBtn = document.getElementById('showAnswers');
 
-  if (submitBtn && quizForm) {
-    submitBtn.addEventListener('click', () => {
-      let score = 0;
-      const total = Object.keys(answers).length;
-      for (const q of Object.keys(answers)) {
-        const checked = quizForm.querySelector(`[name="${q}"]:checked`);
-        if (checked && checked.value === answers[q]) score++;
-      }
-      quizResult.hidden = false;
-      scoreText.textContent = `نتيجتك: ${score} من ${total} — ${feedback(score, total)}`;
-      if (window.sessionStorage) {
-        sessionStorage.setItem('digitalSafetyScore', `${score}/${total}`);
-      }
-    });
-  }
 
-  if (showAnswersBtn) {
-    showAnswersBtn.addEventListener('click', () => {
-      alert('الإجابات الصحيحة:\n1) !G7#xP9@kL (مثال على كلمة مرور قوية)\n2) أتحقق من الرابط والمصدر\n3) رقم الهاتف الخاص');
-    });
-  }
+// =========================
+// التقييم النهائي
+// =========================
+function calculateScore() {
+    let score = 0;
+    let total = 3;
 
-  function feedback(score, total) {
-    const pct = (score / total) * 100;
-    if (pct === 100) return 'ممتاز — فهم تام!';
-    if (pct >= 66) return 'جيد — فهم جيد، راجع نقاط بسيطة.';
-    if (pct >= 33) return 'متوسط — يحتاج مراجعة.';
-    return 'ضعيف — يحتاج مراجعة وممارسة.';
+    for (let i = 1; i <= total; i++) {
+        let answer = document.querySelector(`input[name="q${i}"]:checked`);
+        if (answer) score += parseInt(answer.value);
+    }
+
+    let resultBox = document.getElementById("result");
+    resultBox.style.display = "block";
+
+    if (score === 3) {
+        resultBox.innerHTML = "🎉 ممتاز! حصلت على 3/3 — لديك وعي رقمي رائع!";
+    } else if (score === 2) {
+        resultBox.innerHTML = "👍 جيد! حصلت على 2/3 — تحتاجين إلى تركيز أكبر.";
+    } else {
+        resultBox.innerHTML = "⚠️ تحتاج إلى مراجعة المحتوى — نتيجتك " + score + "/3";
+    }
   }
-});
